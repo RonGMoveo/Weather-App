@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { WeatherData, WeatherError } from '../types/weatherTypes';
 
 interface WeatherCardProps {
@@ -5,10 +6,11 @@ interface WeatherCardProps {
   isLoading: boolean;
   error?: WeatherError | null;
   hasData: boolean;
-  isCelsius: boolean;
 }
 
-const WeatherCard = ({ weatherData, isLoading, error, hasData, isCelsius }: WeatherCardProps) => {
+const WeatherCard = ({ weatherData, isLoading, error, hasData }: WeatherCardProps) => {
+  const [isCelsius, setIsCelsius] = useState(true);
+
   if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
@@ -51,7 +53,7 @@ const WeatherCard = ({ weatherData, isLoading, error, hasData, isCelsius }: Weat
   }
 
   const { location, current, forecast } = weatherData;
-  const upcomingDays = forecast.forecastday.slice(1, 4); 
+  const upcomingDays = forecast.forecastday.slice(1, 4);
 
   const getTemperature = (tempC: number, tempF: number) => {
     return isCelsius ? `${Math.round(tempC)}°C` : `${Math.round(tempF)}°F`;
@@ -59,33 +61,47 @@ const WeatherCard = ({ weatherData, isLoading, error, hasData, isCelsius }: Weat
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
+      {/* Temperature Unit Toggle - top right corner */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setIsCelsius(!isCelsius)}
+          className="px-3 py-1 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-all font-bold text-sm text-gray-700"
+          title={`Switch to ${isCelsius ? 'Fahrenheit' : 'Celsius'}`}
+        >
+          {isCelsius ? '°F' : '°C'}
+        </button>
+      </div>
+
+      {/* Current Weather - Main Section */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {location.name}, {location.country}
-        </h2>
-        
-        <div className="flex items-center justify-center mb-4">
+      <h2 className="text-4xl font-bold text-gray-800 mb-2">
+        {location.name}, {location.country}
+      </h2>
+
+      <div className="mb-4">
+        <div className="text-5xl font-bold text-gray-800 mb-1">
+          {getTemperature(current.temp_c, current.temp_f)}
+        </div>
+        <div className="text-sm text-gray-500">
+          Feels like {getTemperature(current.feelslike_c, current.feelslike_f)}
+        </div>
+
+        <div className="flex flex-col items-center">
           <img 
             src={`https:${current.condition.icon}`} 
             alt={current.condition.text}
-            className="w-16 h-16 mr-4"
+            className="w-20 h-20"
           />
-          <div>
-            <div className="text-5xl font-bold text-gray-800">
-              {getTemperature(current.temp_c, current.temp_f)}
-            </div>
-            <div className="text-sm text-gray-500 mb-2">
-              Feels like {getTemperature(current.feelslike_c, current.feelslike_f)}
-            </div>
-            <div className="text-lg text-gray-600">
-              {current.condition.text}
-            </div>
+          <div className="text-lg text-gray-600">
+            {current.condition.text}
           </div>
         </div>
       </div>
+    </div>
 
+      {/* 3-Day Forecast */}
       <div className="border-t pt-6">
-        <h3 className="text-lg text-center font-semibold text-gray-800 mb-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
           3-Day Forecast
         </h3>
         <div className="grid grid-cols-3 gap-4">
