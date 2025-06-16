@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { WeatherData, WeatherError } from '../types/weatherTypes';
+import ActionButton from './ActionButton';
 
 interface WeatherCardProps {
   weatherData?: WeatherData;
@@ -61,43 +62,41 @@ const WeatherCard = ({ weatherData, isLoading, error, hasData }: WeatherCardProp
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      {/* Temperature Unit Toggle - top right corner */}
-      <div className="flex justify-end">
-        <button
+      <div className="relative">
+        <ActionButton
+          variant="temperature"
+          size="small"
           onClick={() => setIsCelsius(!isCelsius)}
-          className="px-3 py-1 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-all font-bold text-sm text-gray-700"
-          title={`Switch to ${isCelsius ? 'Fahrenheit' : 'Celsius'}`}
+          className="absolute top-0 right-0"
         >
           {isCelsius ? '°F' : '°C'}
-        </button>
+        </ActionButton>
       </div>
 
-      {/* Current Weather - Main Section */}
-      <div className="text-center mb-8">
-      <h2 className="text-4xl font-bold text-gray-800 mb-2">
-        {location.name}, {location.country}
-      </h2>
+      {/* Current Weather - All centered */}
+      <div className="flex flex-col items-center text-center mb-8 space-y-2 mt-2">
+        <h2 className="text-2xl font-bold text-gray-800">
+          {location.name}, {location.country}
+        </h2>
 
-      <div className="mb-4">
-        <div className="text-5xl font-bold text-gray-800 mb-1">
+        <div className="text-5xl font-extrabold text-gray-900">
           {getTemperature(current.temp_c, current.temp_f)}
         </div>
+
         <div className="text-sm text-gray-500">
           Feels like {getTemperature(current.feelslike_c, current.feelslike_f)}
         </div>
 
-        <div className="flex flex-col items-center">
-          <img 
-            src={`https:${current.condition.icon}`} 
-            alt={current.condition.text}
-            className="w-20 h-20"
-          />
-          <div className="text-lg text-gray-600">
-            {current.condition.text}
-          </div>
+        <img
+          src={`https:${current.condition.icon}`}
+          alt={current.condition.text}
+          className="w-16 h-16 mt-2"
+        />
+
+        <div className="text-lg text-gray-600">
+          {current.condition.text}
         </div>
       </div>
-    </div>
 
       {/* 3-Day Forecast */}
       <div className="border-t pt-6">
