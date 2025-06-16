@@ -7,6 +7,7 @@ interface ActionButtonProps {
   children: ReactNode;
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
+  className?: string; 
 }
 
 const ActionButton = ({ 
@@ -14,7 +15,8 @@ const ActionButton = ({
   onClick, 
   children, 
   size = 'medium', 
-  disabled = false 
+  disabled = false,
+  className = ''
 }: ActionButtonProps) => {
   const getShadcnVariant = () => {
     switch (variant) {
@@ -57,14 +59,14 @@ const ActionButton = ({
 
   return (
     <Button
-      variant={getShadcnVariant()}
-      size={getShadcnSize()}
-      onClick={onClick}
-      disabled={disabled}
-      title={variant === 'temperature' ? 'Switch temperature unit' : undefined}
-      className={getCustomSizeClasses()}
-    >
-      {children}
+        variant={getShadcnVariant()}
+        size={getShadcnSize()}
+        onClick={onClick}
+        disabled={disabled}
+        title={variant === 'temperature' ? 'Switch temperature unit' : undefined}
+        className={`${getCustomSizeClasses()} ${className ?? ''}`} 
+        >
+        {children}
     </Button>
   );
 };
